@@ -34,6 +34,35 @@ void add_mat(float * a, float * b, int m, int n)
     }
 }
 
+void matrix_multiply(float * a, float * b, int m, int n)
+{
+    // allocate memory for the result matrix
+    float *c = (float *) malloc(sizeof(float) * m * n);
+
+    // multiply the matrices
+    for(int i=0 ; i<m ; i++)
+    {
+        for(int j=0 ; j<n ; j++)
+        {
+            c[i*n+j] = 0;
+            for(int k=0 ; k<n ; k++)
+            {
+                c[i*n+j] += a[i*n+k] * b[k*n+j];
+            }
+        }
+    }
+
+    // copy the result matrix to b
+    for(int i=0 ; i<m*n ; i++)
+    {
+        b[i] = c[i];
+    }
+
+    // free the memory allocated for c
+    free(c);
+}
+
+
 void print_mat(float * a, int m, int n)
 {
     int index = 0;
