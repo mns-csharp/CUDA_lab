@@ -1,16 +1,16 @@
-# include <iostream>
-# include <cstdlib>
-# include <ctime>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
-void create_mat(float * a, int m, int n)
+void create_mat(float ** a, int m, int n)
 {
-    a = (float *) malloc(sizeof(float) * m * n);
+    *a = (float *) malloc(sizeof(float) * m * n);
     int index = 0;
     for(int i=0; i<m ; i++)
     {
         for(int j=0 ; j<n ; j++)
         {
-            a[index] = rand() % 100;
+            (*a)[index] = rand() % 100;
             index++;
         }
     }
@@ -62,10 +62,11 @@ int main()
     create_mat(&a, m, n);
     create_mat(&b, m, n);
 
-    add_mat(&a, &b, m, n);
+    add_mat(a, b, m, n);
 
-    print_mat(&b, m, n);
+    print_mat(b, m, n);
 
-    delete_mat(&a);
-    delete_mat(&b);
+    delete_mat(a);
+    delete_mat(b);
+    return 0;
 }
