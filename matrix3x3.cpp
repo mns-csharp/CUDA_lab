@@ -1,101 +1,111 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <cuda_runtime.h>
 
-void create_mat(float ** a, int m, int n)
-{
-    *a = (float *) malloc(sizeof(float) * m * n);
-    int index = 0;
-    for(int i=0; i<m ; i++)
-    {
-        for(int j=0 ; j<n ; j++)
-        {
-            (*a)[index] = rand() % 100;
-            index++;
+class Matrix {
+public:
+    Matrix(int _m, int _n) : m(_m), n(_n) {
+        data = new int[m * n];
+    }
+
+    ~Matrix() {
+        delete[] data;
+    }
+
+    void setData(int *values) {
+        for (int i = 0; i < m * n; i++) {
+            data[i] = values[i];
         }
     }
-}
 
-void delete_mat(float * a)
-{
-    free(a);
-}
-
-void add_mat(float * a, float * b, int m, int n)
-{
-    int index = 0;
-    for(int i=0 ; i<m ; i++)
-    {
-        for(int j=0 ; j<n ; j++)
-        {
-            b[index] = a[index] + b[index];
-            index++;
+    void multiply(Matrix &a, Matrix &b) {
+        if (a.n != b.m) {
+            std::cerr << "Error: Invalid matrix dimensions!" << std::endl;
+            return;
         }
+
+        m = a.m;
+        n = b.n;
+        data = new int[m * n];
+
+        int *dev_a, *dev_b, *dev_c;
+
+        cudaMalloc((void**)&dev_a, a.m * a.n * sizeof(int));
+        cudaMalloc((void**)&dev_b, b.m * b.n * sizeof(int));
+        cudaMalloc((void**)&dev_c, m * n * sizeof(int));
+
+        cudaMemcpy(dev_a, a.data, a.m * a.n * sizeof(int), cudaMemcpyHostToDevice);
+        cudaMemcpy(dev_b, b.data, b.m * b.n * sizeof(int), cudaMemcpyHostToDevice);
+
+        dim3 threadsPerBlock(16, 16);
+        dim3 numBlocks((n + threadsPerBlock.x - 1) / threadsPerBlock.x, (m + threadsPerBlock.y - 1) / threadsPerBlock.y);
+
+        matrixMultiplicationKernel<<<numBlocks, threadsPerBlock>>>(dev_a, dev_b, dev_c, a.m, a.n, b.n);
+
+        cudaMemcpy(data, dev_c, m * n * sizeof(int), cudaMemcpyDeviceToHost);
+
+        cudaFree(dev_a);
+        cudaFree(dev_b);
+        cudaFree(dev_c);
     }
-}
 
-void matrix_multiply(float * a, float * b, int m, int n)
-{
-    // allocate memory for the result matrix
-    float *c = (float *) malloc(sizeof(float) * m * n);
-
-    // multiply the matrices
-    for(int i=0 ; i<m ; i++)
-    {
-        for(int j=0 ; j<n ; j++)
-        {
-            c[i*n+j] = 0;
-            for(int k=0 ; k<n ; k++)
-            {
-                c[i*n+j] += a[i*n+k] * b[k*n+j];
+    void print() const {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                std::cout << data[i * n + j] << " ";
             }
+            std::cout << std::endl;
         }
     }
 
-    // copy the result matrix to b
-    for(int i=0 ; i<m*n ; i++)
-    {
-        b[i] = c[i];
-    }
+private:
+    int *data;
+    int m, n;
 
-    // free the memory allocated for c
-    free(c);
-}
+    static __global__ void matrixMultiplicationKernel(int *a, int *b, int *c, int m, int n, int p) {
+        int row = blockIdx.y * blockDim.y + threadIdx.y;
+        int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-
-void print_mat(float * a, int m, int n)
-{
-    int index = 0;
-    for(int i=0; i<m ; i++)
-    {
-        for(int j=0 ; j<n ; j++)
-        {
-            printf("%f ", a[index]);
-            index++;
+        if (row < m && col < p) {
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += a[row * n + i] * b[i * p + col];
+            }
+            c[row * p + col] = sum;
         }
-        printf("\n");
     }
-}
+};
 
-int main()
-{
-    const int m = 3;
-    const int n = 3;
+int main() {
+    const int m1 = 3;
+    const int n1 = 4;
+    int a[m1][n1] = {{1, 2, 3, 4},
+                     {5, 6, 7, 8},
+                     {9, 10, 11, 12}};
 
-    float * a;
-    float * b;
+    const int m2 = 4;
+    const int n2 = 2;
+    int b[m2][n2] = {{1, 2},
+                     {3, 4},
+                     {5, 6},
+                     {7, 8}};
 
-    // seed the random number generator with the current time
-    srand(time(0));
+    Matrix matrix1(m1, n1);
+    matrix1.setData(&a[0][0]);
 
-    create_mat(&a, m, n);
-    create_mat(&b, m, n);
+    Matrix matrix2(m2, n2);
+    matrix2.setData(&b[0][0]);
 
-    add_mat(a, b, m, n);
+    Matrix result(m1, n2);
+    result.multiply(matrix1, matrix2);
 
-    print_mat(b, m, n);
+    std::cout << "Matrix 1:" << std::endl;
+    matrix1.print();
 
-    delete_mat(a);
-    delete_mat(b);
+    std::cout << "Matrix 2:" << std::endl;
+    matrix2.print();
+
+    std::cout << "Result:" << std::endl;
+    result.print();
+
     return 0;
 }
