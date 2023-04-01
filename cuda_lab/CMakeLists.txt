@@ -17,7 +17,7 @@ set(SOURCE_FILES
 set(TEST_SOURCES
         test/main_test.cpp      #plik z main() dla testów
         test/test_vector.cpp
-        test/test_matrix.cpp)
+        test/test_matrix.cpp template_test.cu)
 
 #dodaje bibliotekę Google Test, kompiluje ją z użyciem CMakeLists.txt z folderu googletest-master
 add_subdirectory(googletest-master)

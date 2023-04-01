@@ -22,6 +22,60 @@ private:
     dim3 blocks_per_grid;
 
 public:
+    int get_length() const
+	{
+		return length;
+	}
+	int get_host_a(int i)
+	{
+		return host_a[i];
+	}
+	int get_host_b(int i)
+	{
+		return host_b[i];
+	}
+	int get_host_c(int i)
+	{
+		return host_c[i];
+	}
+	int get_device_a(int i)
+	{
+		return device_a[i];
+	}
+	int get_device_b(int i)
+	{
+		return device_b[i];
+	}
+	int get_device_c(int i)
+	{
+		return device_c[i];
+	}
+	
+	void set_host_a(int i, t value)
+	{
+		host_a[i] = value;
+	}
+	void set_host_b(int i, t value)
+	{
+		host_b[i] = value;
+	}
+	void set_host_c(int i, t value)
+	{
+		host_c[i] = value;
+	}
+	void set_device_a(int i, t value)
+	{
+		device_a[i] = value;
+	}
+	void set_device_b(int i, t value)
+	{
+		device_b[i] = value;
+	}
+	void set_device_c(int i, t value)
+	{
+		device_c[i] = value;
+	}
+	
     void allocate_mem(int n)
     {
          length = n;
@@ -61,8 +115,7 @@ public:
         cudaMemcpy(device_a, host_a, length, cudaMemcpyHostToDevice);
         cudaMemcpy(device_b, host_b, length, cudaMemcpyHostToDevice);
         cudaMemcpy(device_c, host_c, length, cudaMemcpyHostToDevice);
-        kernel_func<<<blocks_per_grid, 
-threads_per_block>>>(device_a, device_b, device_c, length);
+        kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
         cudaDeviceSynchronize();
         cudaMemcpy(device_a, host_a, length, cudaMemcpyDeviceToHost);
         cudaMemcpy(device_b, host_b, length, cudaMemcpyDeviceToHost);
@@ -71,17 +124,58 @@ threads_per_block>>>(device_a, device_b, device_c, length);
     time_t get_elapsed_time(){}
     void display_data()
     {
-        std::cout<<"host data:\n";
-        for(int i=0 ; i<length ; i++)
+		if(host_a!=nullptr && host_b!=nullptr && host_c!=nullptr)
         {
-            std::cout<<host_a[i]<<", "<<host_b[i]<<", "<<host_c[i]<<"\n";
-        }
-
-        std::cout<<"device data:\n";
-        for(int i=0 ; i<length ; i++)
+			std::cout<<"host data:\n";
+			for(int i=0 ; i<length ; i++)
+			{
+				std::cout<<host_a[i]<<", "<<host_b[i]<<", "<<host_c[i]<<"\n";
+			}
+		}
+		else
+		{
+			std::cout<<"host data not found";
+			if(host_a==nullptr) std::cout<<"host_a is empty"; 
+				if(host_b==nullptr) std::cout<<"host_b is empty"; 
+					if(host_c==nullptr)std::cout<<"host_c is empty";
+		}
+		
+		// print device data
+		if(device_a!=nullptr || device_b!=nullptr || device_c!=nullptr)
         {
-            std::cout<<device_a[i]<<", "<<device_b[i]<<", "<<device_c[i]<<"\n";
-        }
+			std::cout<<"device data:\n";
+		}
+		if(device_a!=nullptr)
+        {
+			std::cout<<"device_a: ";
+			for(int i=0 ; i<length ; i++)
+			{
+				std::cout<<device_a[i]<<", ";
+			}
+		}
+		if(device_b!=nullptr)
+        {
+			std::cout<<"device_b: ";
+			for(int i=0 ; i<length ; i++)
+			{
+				std::cout<<device_c[i]<<", ";
+			}
+		}
+		if(device_c!=nullptr)
+        {
+			std::cout<<"device_c: ";
+			for(int i=0 ; i<length ; i++)
+			{
+				std::cout<<device_c[i]<<", ";
+			}
+		}
+		
+		
+			std::cout<<"device data not found";
+			if(device_a==nullptr) std::cout<<"device_a is empty"; 
+				if(device_b==nullptr) std::cout<<"device_b is empty"; 
+					if(device_c==nullptr)std::cout<<"device_c is empty";
+		
     }
 };
 #endif

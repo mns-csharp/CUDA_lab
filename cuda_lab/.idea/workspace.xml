@@ -26,31 +26,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="510760c8-cb17-4bde-8dc4-cf086103d354" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/qmlSettings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/flat_matrix.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/matrix.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/vector.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/matlab.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/main_test.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_matrix.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_vector.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/codeStyleSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/matlab-2_skeleton.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/matlab-2_skeleton.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/include/matlab.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/matlab-2.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/src/matlab.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/test/main_test.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../matlab-2_clion/test/test_vector.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../matrix3x3.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template_test.cu" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,8 +220,16 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\git\CUDA__lab\CUDA_lab\cuda_lab\include" />
+    </key>
   </component>
   <component name="RunManager" selected="Google Test.cuda_lab_test_run">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="All in test_matrix.cpp" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cuda_lab" TARGET_NAME="matlab2_test" RUN_TARGET_PROJECT_NAME="cuda_lab" RUN_TARGET_NAME="matlab2_test" TEST_PATTERN="all-tests(file://$PROJECT_DIR$/test/test_matrix.cpp)" TEST_MODE="PATTERN">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -294,11 +283,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="CMake Application.Build All" />
       <item itemvalue="Google Test.Tests" />
@@ -336,6 +320,7 @@
       <workItem from="1680314197495" duration="9221000" />
       <workItem from="1680373470099" duration="3655000" />
       <workItem from="1680380178867" duration="508000" />
+      <workItem from="1680381514194" duration="1889000" />
     </task>
     <servers />
   </component>

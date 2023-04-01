@@ -1,11 +1,11 @@
-#include "template.hpp"
+#include "include/template.hpp"
 
 __host__ void init_data_func(CudaManager<float>& manager) 
 {
-    for (int i = 0; i < manager.length; ++i) {
-        manager.host_a[i] = rand();
-        manager.host_b[i] = rand();
-        manager.host_c[i] = rand();
+    for (int i = 0; i < manager.get_length(); ++i) {
+        manager.set_host_a(i, rand());
+        manager.set_host_b(i, rand());
+        manager.set_host_c(i, rand());
     }
 }
 
