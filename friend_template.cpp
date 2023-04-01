@@ -21,15 +21,16 @@ public:
     {
         return x[i];
     }
-    void allocate(int length)
+    void allocate(int len)
     {
+		length = len;
         x = new t[length];
     }
     int get_length()
     {
         return length;
     }
-    friend init_data_func(int len);
+    //template<typename t2> friend void init_data_func(Manager& manager);
     void display()
     {
         for(int i=0 ; i<length ; i++)
@@ -43,7 +44,7 @@ public:
     }
 };
 
-void init_data_func(Manager<float> &my_obj)
+void init_data_(Manager<float> &my_obj)
 {
     for (int i = 0; i < my_obj.get_length(); ++i)
     {
@@ -56,6 +57,6 @@ int main()
     const int length = 10;
     Manager<float> my_obj;
     my_obj.allocate(length);
-    my_obj.init_data(init_data_func);
+    my_obj.init_data(init_data_);
     my_obj.display();
 }
