@@ -1,6 +1,6 @@
 #include "include/template.hpp"
 
-__host__ void init_data_func(CudaManager<float>& manager) 
+__host__ void init_data_(CudaManager<float>& manager) 
 {
     for (int i = 0; i < manager.get_length(); ++i) {
         manager.set_host_a(i, rand());
@@ -22,7 +22,7 @@ int main()
 {
     CudaManager<float> manager;
     manager.allocate_mem(10);
-    manager.init_data(init_data_func);
+    manager.init_data(init_data_);
     manager.launch_kernel(vector_add);
     manager.display_data();
     manager.free_mem();

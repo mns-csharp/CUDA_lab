@@ -86,7 +86,7 @@ public:
          cudaMalloc(&device_b, length);
          cudaMalloc(&device_c, length);
     }
-    friend void init_data_func(CudaManager& manager);
+    //friend void init_data_func(CudaManager& manager);
     void init_data(void (*init_data_func)(CudaManager&))
     {
         init_data_func(*this);
