@@ -3,6 +3,25 @@
 
 #include <iostream>
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
+
+void init_rand()
+{
+	srand(time(0));
+}
+
+float rand_float(float min, float max)
+{
+    float randomFloat = (max - min) * ((float)rand() / RAND_MAX) + min;
+
+    return randomFloat;
+}
+
+int rand_int(int min, int max) 
+{
+    return rand() % (max - min + 1) + min;
+}
 
 //#CHECK(call)
 
@@ -122,7 +141,7 @@ public:
         cudaMemcpy(device_c, host_c, length, cudaMemcpyDeviceToHost);
     }
     time_t get_elapsed_time(){}
-    void display_data()
+    void display_host()
     {
 		if(host_a!=nullptr && host_b!=nullptr && host_c!=nullptr)
         {
@@ -139,7 +158,9 @@ public:
 				if(host_b==nullptr) std::cout<<"host_b is empty"; 
 					if(host_c==nullptr)std::cout<<"host_c is empty";
 		}
-		
+	}
+    void display_device()
+    {	
 		// print device data
 		if(device_a!=nullptr || device_b!=nullptr || device_c!=nullptr)
         {
