@@ -1,7 +1,7 @@
 #include "include/template.hpp"
 
 const int min_ = 0;
-const int min_ = 10;
+const int max_ = 10;
 
 __host__ void init_data_(CudaManager<float>& manager) 
 {
@@ -30,8 +30,10 @@ int main()
     manager.allocate_mem(10);
     manager.init_data(init_data_);
     manager.display_host();
+	manager.display_device();
 	manager.launch_kernel(vector_add);
     manager.display_host();
+	manager.display_device();
     manager.free_mem();
 }
 
