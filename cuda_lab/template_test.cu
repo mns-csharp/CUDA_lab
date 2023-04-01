@@ -1,15 +1,15 @@
 #include "include/template.hpp"
 
-const int min = 0;
-const int min = 10;
+const int min_ = 0;
+const int min_ = 10;
 
 __host__ void init_data_(CudaManager<float>& manager) 
 {
     for (int i = 0; i < manager.get_length(); ++i) 
 	{
-        manager.set_host_a(i, rand_int(min, max));
-        manager.set_host_b(i, rand_int(min, max));
-        manager.set_host_c(i, rand_int(min, max));
+        manager.set_host_a(i, rand_int(min_, max_));
+        manager.set_host_b(i, rand_int(min_, max_));
+        manager.set_host_c(i, rand_int(min_, max_));
     }
 }
 

@@ -11,16 +11,16 @@ void init_rand()
 	srand(time(0));
 }
 
-float rand_float(float min, float max)
+float rand_float(float min_, float max_)
 {
-    float randomFloat = (max - min) * ((float)rand() / RAND_MAX) + min;
+    float randomFloat = (max_ - min_) * ((float)rand() / RAND_MAX) + min_;
 
     return randomFloat;
 }
 
-int rand_int(int min, int max) 
+int rand_int(int min_, int max_) 
 {
-    return rand() % (max - min + 1) + min;
+    return rand() % (max_ - min_ + 1) + min_;
 }
 
 //#CHECK(call)
