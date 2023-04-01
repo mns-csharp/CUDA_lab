@@ -1,4 +1,4 @@
-#include "include/template.hpp"
+#include "template.hpp"
 
 const int min_ = 0;
 const int max_ = 10;
