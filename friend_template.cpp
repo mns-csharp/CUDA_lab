@@ -39,11 +39,11 @@ public:
     }
     void init_data(void (*my_func)(Manager &))
     {
-        my_func();
+        my_func(*this);
     }
 };
 
-void init_data_func(const Manager &my_obj)
+void init_data_func(Manager<float> &my_obj)
 {
     for (int i = 0; i < my_obj.get_length(); ++i)
     {
