@@ -51,14 +51,33 @@ void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName,
 	}
 }
 
-#define CHECK_CUDA_ERROR(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+#define CHECK_CUDA_ERROR(val) check((val), #val, __FILE__, __LINE__)
+template <typename T>
+void check(T err, const char* const func, const char* const file,
+           const int line)
 {
-   if (code != cudaSuccess) 
-   {
-      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
-   }
+    if (err != cudaSuccess)
+    {
+        std::cerr << "CUDA Runtime Error at: " << file << ":" << line
+                  << std::endl;
+        std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
+        // We don't exit when we encounter CUDA errors in this example.
+        // std::exit(EXIT_FAILURE);
+    }
+}
+
+#define CHECK_LAST_CUDA_ERROR() checkLast(__FILE__, __LINE__)
+void checkLast(const char* const file, const int line)
+{
+    cudaError_t err{cudaGetLastError()};
+    if (err != cudaSuccess)
+    {
+        std::cerr << "CUDA Runtime Error at: " << file << ":" << line
+                  << std::endl;
+        std::cerr << cudaGetErrorString(err) << std::endl;
+        // We don't exit when we encounter CUDA errors in this example.
+        // std::exit(EXIT_FAILURE);
+    }
 }
 
 __global__ void kernel_func(float *arr1, float *arr2, float *outp, int length) 
@@ -102,9 +121,9 @@ int main()
         exit(1);
     }
 
-    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_a, sizeof(t) * length));
-    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_b, sizeof(t) * length));
-    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_c, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_a, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_b, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_c, sizeof(t) * length));
 
 	for (int i = 0; i < length ; ++i) 
 	{
@@ -118,14 +137,15 @@ int main()
 						(length + threads_per_block.y - 1) / threads_per_block.y,
 						(length + threads_per_block.z - 1) / threads_per_block.z);								
 	
-	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice))
-    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice))
+	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
 	kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
 	
-	//CHECK_CUDA_ERROR(cudaGetLastError());
+	CHECK_LAST_CUDA_ERROR();
+	
 	CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
-	CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost))
+	CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost));
 	
 	write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
