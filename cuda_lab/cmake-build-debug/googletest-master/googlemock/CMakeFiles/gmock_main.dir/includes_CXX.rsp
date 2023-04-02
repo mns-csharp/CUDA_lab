@@ -1,1 +1,0 @@
--IC:/git/CUDA__lab/CUDA_lab/cuda_lab/include -isystem "C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googletest/include" -isystem "C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googlemock/include" -isystem "C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googlemock" -isystem "C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googletest"

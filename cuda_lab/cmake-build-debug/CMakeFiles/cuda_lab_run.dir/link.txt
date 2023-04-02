@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 231.8109.4\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\cuda_lab_run.dir/objects.a
-"C:\PROGRA~1\JetBrains\CLion 231.8109.4\bin\mingw\bin\ar.exe" qc CMakeFiles\cuda_lab_run.dir/objects.a @CMakeFiles\cuda_lab_run.dir\objects1
-"C:\PROGRA~1\JetBrains\CLion 231.8109.4\bin\mingw\bin\g++.exe" -g -Wl,--whole-archive CMakeFiles\cuda_lab_run.dir/objects.a -Wl,--no-whole-archive -o cuda_lab_run.exe -Wl,--out-implib,libcuda_lab_run.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cuda_lab_run.dir\linkLibs.rsp
