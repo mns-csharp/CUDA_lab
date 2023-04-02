@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <cuda.h>
+
 void init_rand()
 {
 	srand(time(0));
@@ -155,17 +157,12 @@ public:
 		{
 			std::cout<<"host data not found";
 			if(host_a==nullptr) std::cout<<"host_a is empty"; 
-				if(host_b==nullptr) std::cout<<"host_b is empty"; 
-					if(host_c==nullptr)std::cout<<"host_c is empty";
+			if(host_b==nullptr) std::cout<<"host_b is empty"; 
+			if(host_c==nullptr) std::cout<<"host_c is empty";
 		}
 	}
-    void display_device()
+    /*void display_device()
     {	
-		// print device data
-		if(device_a!=nullptr || device_b!=nullptr || device_c!=nullptr)
-        {
-			std::cout<<"device data:\n";
-		}
 		if(device_a!=nullptr)
         {
 			std::cout<<"device_a: ";
@@ -189,14 +186,11 @@ public:
 			{
 				std::cout<<device_c[i]<<", ";
 			}
-		}
+		}		
 		
-		
-			std::cout<<"device data not found";
-			if(device_a==nullptr) std::cout<<"device_a is empty"; 
-				if(device_b==nullptr) std::cout<<"device_b is empty"; 
-					if(device_c==nullptr)std::cout<<"device_c is empty";
-		
-    }
+		if(device_a==nullptr) std::cout<<"device_a is empty"; 
+		if(device_b==nullptr) std::cout<<"device_b is empty"; 
+		if(device_c==nullptr) std::cout<<"device_c is empty";
+    }*/
 };
 #endif

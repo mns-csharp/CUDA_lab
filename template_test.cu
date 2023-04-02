@@ -9,7 +9,7 @@ __host__ void init_data_(CudaManager<float>& manager)
 	{
         manager.set_host_a(i, rand_int(min_, max_));
         manager.set_host_b(i, rand_int(min_, max_));
-        manager.set_host_c(i, rand_int(min_, max_));
+        manager.set_host_c(i, 0);
     }
 }
 
@@ -30,10 +30,8 @@ int main()
     manager.allocate_mem(10);
     manager.init_data(init_data_);
     manager.display_host();
-	manager.display_device();
 	manager.launch_kernel(vector_add);
     manager.display_host();
-	manager.display_device();
     manager.free_mem();
 }
 
