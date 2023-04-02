@@ -13,10 +13,10 @@ __host__ void init_data_(CudaManager<float>& manager)
     }
 }
 
-__global__ void vector_add(float *arr1, float *arr2, float *outp, int n) 
+__global__ void vector_add(float *arr1, float *arr2, float *outp, int length) 
 {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid < n) 
+    if (tid < length) 
     {
         outp[tid] = arr1[tid] + arr2[tid];
     }
@@ -29,6 +29,7 @@ int main()
     CudaManager<float> manager;
     manager.allocate_mem(10);
     manager.init_data(init_data_);
+	manager.set_thread_dim(16, 16, 1);
     manager.display_host();
 	manager.launch_kernel(vector_add);
     manager.display_host();

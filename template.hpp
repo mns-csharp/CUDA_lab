@@ -99,15 +99,14 @@ public:
 	
     void allocate_mem(int n)
     {
-         length = n;
-         host_a = (t *) malloc(sizeof(t) * length);
-         host_b = (t *) malloc(sizeof(t) * length);
-         host_c = (t *) malloc(sizeof(t) * length);
-         cudaMalloc(&device_a, length);
-         cudaMalloc(&device_b, length);
-         cudaMalloc(&device_c, length);
+        length = n;
+        host_a = (t *) malloc(sizeof(t) * length);
+        host_b = (t *) malloc(sizeof(t) * length);
+        host_c = (t *) malloc(sizeof(t) * length);
+        cudaMalloc((void**)&device_a, sizeof(t) * length);
+		cudaMalloc((void**)&device_b, sizeof(t) * length);
+		cudaMalloc((void**)&device_c, sizeof(t) * length);
     }
-    //friend void init_data_func(CudaManager& manager);
     void init_data(void (*init_data_func)(CudaManager&))
     {
         init_data_func(*this);
@@ -133,11 +132,11 @@ public:
     }
     void launch_kernel(void (*kernel_func)(t*, t*, t*, int))
     {
-        cudaMemcpy(device_a, host_a, length, cudaMemcpyHostToDevice);
-        cudaMemcpy(device_b, host_b, length, cudaMemcpyHostToDevice);
-        kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
-        cudaDeviceSynchronize();
-        cudaMemcpy(device_c, host_c, length, cudaMemcpyDeviceToHost);
+        cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice);
+		cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice);
+		kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
+		cudaDeviceSynchronize();
+		cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost);
     }
     time_t get_elapsed_time(){}
     void display_host()
