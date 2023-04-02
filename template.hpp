@@ -135,11 +135,8 @@ public:
     {
         cudaMemcpy(device_a, host_a, length, cudaMemcpyHostToDevice);
         cudaMemcpy(device_b, host_b, length, cudaMemcpyHostToDevice);
-        cudaMemcpy(device_c, host_c, length, cudaMemcpyHostToDevice);
         kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
         cudaDeviceSynchronize();
-        cudaMemcpy(device_a, host_a, length, cudaMemcpyDeviceToHost);
-        cudaMemcpy(device_b, host_b, length, cudaMemcpyDeviceToHost);
         cudaMemcpy(device_c, host_c, length, cudaMemcpyDeviceToHost);
     }
     time_t get_elapsed_time(){}

@@ -1,0 +1,1 @@
+-IC:/git/CUDA__lab/CUDA_lab/cuda_lab/include -I"C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googletest/include" -I"C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googlemock/include" -I"C:/git/CUDA__lab/CUDA_lab/cuda_lab/googletest-master/googletest"
