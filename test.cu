@@ -110,7 +110,7 @@ int main()
     dim3 blocks_per_grid;
 	
 	
-	length = 1000000;
+	length = 999999;
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
@@ -132,10 +132,15 @@ int main()
         host_c[i] = 0;
     }
 
+/*
+    Needed threads = 999999
+	
+*/   
+	int one_third = length / 3;
 	threads_per_block = dim3(16, 8, 4);
-	blocks_per_grid = dim3((length + threads_per_block.x - 1) / threads_per_block.x,
-						(length + threads_per_block.y - 1) / threads_per_block.y,
-						(length + threads_per_block.z - 1) / threads_per_block.z);								
+	blocks_per_grid = dim3(one_third / threads_per_block.x,
+						   one_third / threads_per_block.y,
+						   one_third / threads_per_block.z);								
 	
 	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
