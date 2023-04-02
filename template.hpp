@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <chrono>
 
 void init_rand()
 {
@@ -44,6 +45,8 @@ private:
     int length;
     dim3 threads_per_block;
     dim3 blocks_per_grid;
+	std::chrono::high_resolution_clock::time_point start_;
+	std::chrono::high_resolution_clock::time_point stop_;
 
 public:
     int get_length() const
@@ -137,11 +140,27 @@ public:
     {
         cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice);
 		cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice);
+		
+		// start measuring time
+		start_ = std::chrono::high_resolution_clock::now();		
+		
 		kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
 		cudaDeviceSynchronize();
+		
+		// stop measuring time
+        stop_ = std::chrono::high_resolution_clock::now();
+		
 		cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost);
     }
-    time_t get_elapsed_time(){}
+    std::chrono::microseconds::rep get_elapsed_time()
+	{
+		std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_ - start_);
+        return duration.count();
+	}
+	void display_elapsed_time()
+	{
+		std::cout << "Kernel execution time: " << this->get_elapsed_time() << " microseconds.\n";
+	}
     void display_host_data()
     {
 		if(host_a!=nullptr && host_b!=nullptr && host_c!=nullptr)
