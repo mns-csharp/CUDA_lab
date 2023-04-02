@@ -132,7 +132,7 @@ int main()
         host_c[i] = 0;
     }
 
-	threads_per_block = dim3(16, 16, 16);
+	threads_per_block = dim3(16, 8, 4);
 	blocks_per_grid = dim3((length + threads_per_block.x - 1) / threads_per_block.x,
 						(length + threads_per_block.y - 1) / threads_per_block.y,
 						(length + threads_per_block.z - 1) / threads_per_block.z);								
