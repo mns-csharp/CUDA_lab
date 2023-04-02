@@ -12,6 +12,7 @@ int main()
         printf("Device %d: %s\n", i, deviceProp.name);
         printf("  Maximum threads per block: %d\n", deviceProp.maxThreadsPerBlock);
     }
+	int length = 1000000;
 	dim3 threads_per_block(16, 16, 16);
 	dim3 blocks_per_grid((length + threads_per_block.x - 1) / threads_per_block.x,
 						 (length + threads_per_block.y - 1) / threads_per_block.y,
