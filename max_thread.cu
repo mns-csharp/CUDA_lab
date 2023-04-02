@@ -21,7 +21,11 @@ int main()
     maxGridSize.x = deviceProp.maxGridSize[0];
     maxGridSize.y = deviceProp.maxGridSize[1];
     maxGridSize.z = deviceProp.maxGridSize[2];
-    std::cout << "Maximum blocks per grid: " << maxGridSize.x * maxGridSize.y * maxGridSize.z << std::endl;
+	
+    std::cout << "Maximum blocks per grid: " << maxGridSize.x * maxGridSize.y * maxGridSize.z << std::endl;	
+	std::cout << "Maximum blocks per grid : x dimenson: " << maxGridSize.x;
+	std::cout << "Maximum blocks per grid : y dimenson: " << maxGridSize.y;
+	std::cout << "Maximum blocks per grid : z dimenson: " << maxGridSize.z;
 	
 	////////////////////////////////////////////
 	int length = 1000000;
