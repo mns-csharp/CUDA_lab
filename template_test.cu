@@ -27,7 +27,7 @@ int main()
     init_rand();
 	
     CudaManager<float> manager;
-    manager.allocate_mem(10);
+    manager.allocate_mem(1000000);
     manager.init_data(init_data_);
 	manager.set_thread_dim(16, 16, 1);
     manager.display_host_data();
