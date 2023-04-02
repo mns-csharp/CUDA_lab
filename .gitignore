@@ -1,6 +1,6 @@
-/Debug/
-/cmake-build-debug
-/.idea
+/cuda_lab/Debug/
+/cuda_lab/cmake-build-debug
+/cuda_lab/.idea
 
 *.bin
 *.exe
