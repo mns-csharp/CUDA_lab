@@ -30,9 +30,9 @@ int main()
     manager.allocate_mem(10);
     manager.init_data(init_data_);
 	manager.set_thread_dim(16, 16, 1);
-    manager.display_host();
+    manager.display_host_data();
 	manager.launch_kernel(vector_add);
-    manager.display_host();
+    manager.write_output_to_file("template_output.txt");
     manager.free_mem();
 }
 

@@ -5,8 +5,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-
+#include <string>
 #include <cuda.h>
+#include <fstream>
+#include <iomanip>
+#include <string>
 
 void init_rand()
 {
@@ -139,7 +142,7 @@ public:
 		cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost);
     }
     time_t get_elapsed_time(){}
-    void display_host()
+    void display_host_data()
     {
 		if(host_a!=nullptr && host_b!=nullptr && host_c!=nullptr)
         {
@@ -157,36 +160,24 @@ public:
 			if(host_c==nullptr) std::cout<<"host_c is empty";
 		}
 	}
-    /*void display_device()
-    {	
-		if(device_a!=nullptr)
-        {
-			std::cout<<"device_a: ";
-			for(int i=0 ; i<length ; i++)
+	void write_output_to_file(std::string fileName) 
+	{
+		std::ofstream outputFile;
+		outputFile.open(fileName);
+
+		if(outputFile.is_open()) 
+		{
+			for(int i = 0; i < length; i++) 
 			{
-				std::cout<<device_a[i]<<", ";
+				outputFile << std::setw(10) << std::left << host_a[i] << std::setw(10) << std::left << host_b[i] << std::setw(10) << std::left << host_c[i] << "\n";
 			}
+			outputFile.close();
+			std::cout << "File written successfully.\n";
+		} 
+		else 
+		{
+			std::cerr << "Error opening file.\n";
 		}
-		if(device_b!=nullptr)
-        {
-			std::cout<<"device_b: ";
-			for(int i=0 ; i<length ; i++)
-			{
-				std::cout<<device_c[i]<<", ";
-			}
-		}
-		if(device_c!=nullptr)
-        {
-			std::cout<<"device_c: ";
-			for(int i=0 ; i<length ; i++)
-			{
-				std::cout<<device_c[i]<<", ";
-			}
-		}		
-		
-		if(device_a==nullptr) std::cout<<"device_a is empty"; 
-		if(device_b==nullptr) std::cout<<"device_b is empty"; 
-		if(device_c==nullptr) std::cout<<"device_c is empty";
-    }*/
+	}
 };
 #endif
