@@ -23,9 +23,9 @@ int main()
     maxGridSize.z = deviceProp.maxGridSize[2];
 	
     std::cout << "Maximum blocks per grid: " << maxGridSize.x * maxGridSize.y * maxGridSize.z << std::endl;	
-	std::cout << "Maximum blocks per grid : x dimenson: " << maxGridSize.x;
-	std::cout << "Maximum blocks per grid : y dimenson: " << maxGridSize.y;
-	std::cout << "Maximum blocks per grid : z dimenson: " << maxGridSize.z;
+	std::cout << "  Maximum blocks per grid : x dimenson: " << maxGridSize.x << std::endl;
+	std::cout << "  Maximum blocks per grid : y dimenson: " << maxGridSize.y << std::endl;
+	std::cout << "  Maximum blocks per grid : z dimenson: " << maxGridSize.z << std::endl;
 	
 	////////////////////////////////////////////
 	int length = 1000000;
@@ -33,7 +33,7 @@ int main()
 	dim3 blocks_per_grid((length + threads_per_block.x - 1) / threads_per_block.x,
 						 (length + threads_per_block.y - 1) / threads_per_block.y,
 						 (length + threads_per_block.z - 1) / threads_per_block.z);	
-	printf("blocks_per_grid dimensions: (%d, %d, %d)\n", blocks_per_grid.x, blocks_per_grid.y, blocks_per_grid.z);
+	printf("\nblocks_per_grid dimensions: (%d, %d, %d)\n", blocks_per_grid.x, blocks_per_grid.y, blocks_per_grid.z);
     
 	return 0;
 }
