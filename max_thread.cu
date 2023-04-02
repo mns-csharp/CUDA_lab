@@ -14,18 +14,34 @@ int main()
         printf("  Maximum threads per block: %d\n", deviceProp.maxThreadsPerBlock);
     }
 	
-    dim3 maxGridSize;
-    int deviceID = 0; // use device 0
-    cudaDeviceProp deviceProp;
-    cudaGetDeviceProperties(&deviceProp, deviceID);
-    maxGridSize.x = deviceProp.maxGridSize[0];
-    maxGridSize.y = deviceProp.maxGridSize[1];
-    maxGridSize.z = deviceProp.maxGridSize[2];
-	
-    std::cout << "Maximum blocks per grid : total: " << maxGridSize.x * maxGridSize.y * maxGridSize.z << std::endl;	
-	std::cout << "  Maximum blocks per grid : x dimenson: " << maxGridSize.x << std::endl;
-	std::cout << "  Maximum blocks per grid : y dimenson: " << maxGridSize.y << std::endl;
-	std::cout << "  Maximum blocks per grid : z dimenson: " << maxGridSize.z << std::endl;
+	//for CUDA 10.0 or lower.
+    int maxGridSize[3];
+	int deviceID = 0; // use device 0
+	cudaDeviceProp deviceProp;
+	cudaGetDeviceProperties(&deviceProp, deviceID);
+	maxGridSize[0] = deviceProp.maxGridSize[0];
+	maxGridSize[1] = deviceProp.maxGridSize[1];
+	maxGridSize[2] = deviceProp.maxGridSize[2];
+
+	std::cout << "Maximum blocks per grid : total: " << (unsigned long long)maxGridSize[0] * (unsigned long long)maxGridSize[1] * (unsigned long long)maxGridSize[2] << std::endl; 
+	std::cout << "  Maximum blocks per grid : x dimension: " << maxGridSize[0] << std::endl;
+	std::cout << "  Maximum blocks per grid : y dimension: " << maxGridSize[1] << std::endl;
+	std::cout << "  Maximum blocks per grid : z dimension: " << maxGridSize[2] << std::endl;
+
+	/* //for CUDA 10.1 or higher
+	int maxGridSize[3];
+	int deviceID = 0; // use device 0
+	cudaDeviceProp deviceProp;
+	cudaGetDeviceProperties(&deviceProp, deviceID);
+	cudaDeviceGetAttribute(&maxGridSize[0], cudaDevAttrMaxGridSizeX, deviceID);
+	cudaDeviceGetAttribute(&maxGridSize[1], cudaDevAttrMaxGridSizeY, deviceID);
+	cudaDeviceGetAttribute(&maxGridSize[2], cudaDevAttrMaxGridSizeZ, deviceID);
+
+	std::cout << "Maximum blocks per grid : total: " << (unsigned long long)maxGridSize[0] * (unsigned long long)maxGridSize[1] * (unsigned long long)maxGridSize[2] << std::endl; 
+	std::cout << "  Maximum blocks per grid : x dimension: " << maxGridSize[0] << std::endl;
+	std::cout << "  Maximum blocks per grid : y dimension: " << maxGridSize[1] << std::endl;
+	std::cout << "  Maximum blocks per grid : z dimension: " << maxGridSize[2] << std::endl;
+	*/
 	
 	////////////////////////////////////////////
 	int length = 1000000;
