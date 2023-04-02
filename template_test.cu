@@ -30,7 +30,7 @@ int main()
     manager.allocate_mem(1000000);
     manager.init_data(init_data_);
 	manager.set_thread_dim(16, 16, 1);
-    manager.display_host_data();
+    //manager.display_host_data();
 	manager.launch_kernel(vector_add);
 	manager.display_elapsed_time();
     manager.write_output_to_file("template_output.txt");
