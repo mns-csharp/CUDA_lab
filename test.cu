@@ -63,10 +63,18 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 
 __global__ void kernel_func(float *arr1, float *arr2, float *outp, int length) 
 {
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid < length) 
+	int dimx = length;
+	int dimy = length;
+	int dimz = length;
+	
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int z = blockIdx.z * blockDim.z + threadIdx.z;
+
+    if (x < dimx && y < dimy && z < dimz) 
     {
-        outp[tid] = arr1[tid] + arr2[tid];
+        int index = z * dimx * dimy + y * dimx + x;
+        outp[index] = arr1[index] + arr2[index];
     }
 }
 
@@ -115,7 +123,7 @@ int main()
 	
 	kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
 	
-	CHECK_CUDA_ERROR(cudaGetLastError());
+	//CHECK_CUDA_ERROR(cudaGetLastError());
 	CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
 	CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost))
 	
