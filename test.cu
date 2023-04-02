@@ -51,6 +51,16 @@ void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName,
 	}
 }
 
+#define CHECK_CUDA_ERROR(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
 __global__ void kernel_func(float *arr1, float *arr2, float *outp, int length) 
 {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -77,9 +87,16 @@ int main()
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
-	cudaMalloc((void**)&device_a, sizeof(t) * length);
-	cudaMalloc((void**)&device_b, sizeof(t) * length);
-	cudaMalloc((void**)&device_c, sizeof(t) * length);
+	
+	if (host_a == nullptr || host_b == nullptr || host_c == nullptr)
+    {
+        std::cerr << "Error: Memory allocation for host arrays failed." << std::endl;
+        exit(1);
+    }
+
+    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_a, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_b, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**)&device_c, sizeof(t) * length));
 
 	for (int i = 0; i < length ; ++i) 
 	{
@@ -88,17 +105,19 @@ int main()
         host_c[i] = 0;
     }
 
-	threads_per_block = dim3(16, 16, 1);
+	threads_per_block = dim3(16, 16, 16);
 	blocks_per_grid = dim3((length + threads_per_block.x - 1) / threads_per_block.x,
 						(length + threads_per_block.y - 1) / threads_per_block.y,
-						(length + threads_per_block.z - 1) / threads_per_block.z);
-								
+						(length + threads_per_block.z - 1) / threads_per_block.z);								
 	
-	cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice);
-	cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice);
+	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice))
+    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice))
+	
 	kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
-	cudaDeviceSynchronize();
-	cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost);
+	
+	CHECK_CUDA_ERROR(cudaGetLastError());
+	CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
+	CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost))
 	
 	write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
