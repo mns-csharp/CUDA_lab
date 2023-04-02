@@ -2,8 +2,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-
+#include <string>
 #include <cuda.h>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <chrono>
 
 typedef float t;
 
@@ -25,6 +29,26 @@ float rand_float(float min_, float max_)
 int rand_int(int min_, int max_) 
 {
     return rand() % (max_ - min_ + 1) + min_;
+}
+
+void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName, int length) 
+{
+	std::ofstream outputFile;
+	outputFile.open(fileName);
+
+	if(outputFile.is_open()) 
+	{
+		for(int i = 0; i < length; i++) 
+		{
+			outputFile << std::setw(10) << std::left << host_a[i] << std::setw(10) << std::left << host_b[i] << std::setw(10) << std::left << host_c[i] << "\n";
+		}
+		outputFile.close();
+		std::cout << "File written successfully.\n";
+	} 
+	else 
+	{
+		std::cerr << "Error opening file.\n";
+	}
 }
 
 __global__ void kernel_func(float *arr1, float *arr2, float *outp, int length) 
@@ -49,7 +73,7 @@ int main()
     dim3 blocks_per_grid;
 	
 	
-	length = 10;
+	length = 1000000;
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
@@ -76,12 +100,7 @@ int main()
 	cudaDeviceSynchronize();
 	cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost);
 	
-	for (int i = 0; i < length; ++i) 
-	{
-        std::cout<<host_a[i]<<", ";
-        std::cout<<host_b[i]<<", ";
-        std::cout<<host_c[i]<<"\n";
-    }
+	write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
 	cudaFree(device_a);
 	cudaFree(device_b);
