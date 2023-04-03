@@ -140,16 +140,17 @@ int main()
         host_c[i] = 0;
     }
 
-	int max_threads_per_block = 1024;
-	threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
-    blocks_per_grid = dim3(ceil(length / max_threads_per_block / 32), 
-	                       ceil(length / max_threads_per_block / 8), 
-						   ceil(length / max_threads_per_block / 4));
+    int max_threads_per_block = 1024;
+    int max_block_per_grid_per_dim = 62500;
+    threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
+    blocks_per_grid = dim3(62500, 62500, 62500); 
+                           // ceil((length + max_block_per_grid_per_dim-1) / 8), 
+			   // ceil((length + max_block_per_grid_per_dim-1) / 4));
 
     print_dim3("threads_per_block", threads_per_block);
-	print_dim3("blocks_per_grid", blocks_per_grid);
+    print_dim3("blocks_per_grid", blocks_per_grid);
 
-	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
 	kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
