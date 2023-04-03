@@ -51,10 +51,18 @@ void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName,
 	}
 }
 
+void print_dim3(std::string text, dim3 data)
+{
+    std::cout << "\n";
+    std::cout << text << " ";
+    std::cout << data.x <<" * "<< data.y<<" * "<< data.z << " = ";
+	std::cout << data.x * data.y * data.z;
+	std::cout << "\n";
+}
+
 #define CHECK_CUDA_ERROR(val) check((val), #val, __FILE__, __LINE__)
 template <typename T>
-void check(T err, const char* const func, const char* const file,
-           const int line)
+void check(T err, const char* const func, const char* const file, const int line)
 {
     if (err != cudaSuccess)
     {
@@ -137,6 +145,9 @@ int main()
     blocks_per_grid = dim3(ceil(length / max_threads_per_block / 32), 
 	                       ceil(length / max_threads_per_block / 8), 
 						   ceil(length / max_threads_per_block / 4));
+
+    print_dim3("threads_per_block", threads_per_block);
+	print_dim3("blocks_per_grid", blocks_per_grid);
 
 	CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
