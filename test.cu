@@ -118,7 +118,7 @@ int main()
     dim3 blocks_per_grid;
 	
 	
-	length = 1000000;
+	length = 10000;
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
@@ -140,10 +140,10 @@ int main()
         host_c[i] = 0;
     }
 
-    int max_threads_per_block = 1024;
-    int max_block_per_grid_per_dim = 62500;
+    //int max_thread = 1024;
+    int max_block = 62500;
     threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
-    blocks_per_grid = dim3(62500, 62500, 62500); 
+    blocks_per_grid = dim3(max_block, max_block, max_block); 
                            // ceil((length + max_block_per_grid_per_dim-1) / 8), 
 			   // ceil((length + max_block_per_grid_per_dim-1) / 4));
 
@@ -153,19 +153,19 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
-	kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, length);
+    kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
 	
-	CHECK_LAST_CUDA_ERROR();
+    CHECK_LAST_CUDA_ERROR();
 	
-	CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
-	CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost));
+    CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
+    CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost));
 	
-	write_output_to_file(host_a, host_b, host_c, "output.txt", length);
+    write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
-	cudaFree(device_a);
-	cudaFree(device_b);
-	cudaFree(device_c);
-	free(host_a);
-	free(host_b);
-	free(host_c);
+    cudaFree(device_a);
+    cudaFree(device_b);
+    cudaFree(device_c);
+    free(host_a);
+    free(host_b);
+    free(host_c);
 }
