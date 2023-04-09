@@ -88,20 +88,48 @@ void checkLast(const char* const file, const int line)
     }
 }
 
-__global__ void kernel_func(float *A, float *B, float *C, int N) 
+/**
+__global__ void MultiplyMatrix(float* A, float* B, float** C, int N)
 {
-	int dimx = N;
+    int dimx = N;
 	int dimy = N;
 	int dimz = N;
-	
+
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
     int k = blockIdx.z * blockDim.z + threadIdx.z;
 
-    if (i < dimx && j < dimy && k < dimz) 
-    {
-        int index = k * dimx * dimy + j * dimx + i;
-        C[index] = A[index] + B[index];
+    if (i < N && j < N && k < N) 
+	{
+        int loc_c = k * dimx * dimy + j * dimx + i;
+        int loc_a = j * dimx + i;
+        int loc_b = i * dimy + j;
+        (*C)[loc_c] = 0.0f;
+        for (int l=0; l<N; l++) 
+		{
+            float temp = A[loc_a+l]*B[loc_b+l];
+            (*C)[loc_c] += temp;
+        }
+    }
+}
+**/
+
+__global__ void AddMatrixKernel(float *A, float *B, float *C, int N) 
+{
+	int dimx = N;
+	int dimy = N;
+	int dimz = N;
+
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int k = blockIdx.z * blockDim.z + threadIdx.z;
+
+    if (i < N && j < N && k < N) 
+	{
+        int loc_c = k * dimx * dimy + j * dimx + i;
+        int loc_a = j * dimx + i;
+        int loc_b = i * dimy + j;
+        (*C)[loc_c] = A[loc_a] + B[loc_b];
     }
 }
 
@@ -118,7 +146,7 @@ int main()
     dim3 blocks_per_grid;
 	
 	
-	length = 3;
+	length = 1000;
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
@@ -145,7 +173,7 @@ int main()
     threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
     blocks_per_grid = dim3(max_block, max_block, max_block); 
                            // ceil((length + max_block_per_grid_per_dim-1) / 8), 
-			   // ceil((length + max_block_per_grid_per_dim-1) / 4));
+			               // ceil((length + max_block_per_grid_per_dim-1) / 4));
 
     print_dim3("threads_per_block", threads_per_block);
     print_dim3("blocks_per_grid", blocks_per_grid);
@@ -153,7 +181,7 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
-    kernel_func<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
+    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
 	
     CHECK_LAST_CUDA_ERROR();
 	
