@@ -89,7 +89,7 @@ void checkLast(const char* const file, const int line)
 }
 
 
-__global__ void AddMatrixKernel(float *A, float *B, float *C, int N) 
+__global__ void AddMatrixKernel(t *A, t *B, t *C, int N) 
 {
 	int dimx = N;
 	int dimy = N;
@@ -138,8 +138,8 @@ int main()
 
 	for (int i = 0; i < length ; ++i) 
 	{
-        host_a[i] = rand_int(min_, max_);
-        host_b[i] = rand_int(min_, max_);
+        host_a[i] = rand_float(min_, max_);
+        host_b[i] = rand_float(min_, max_);
         host_c[i] = 0;
     }
 
