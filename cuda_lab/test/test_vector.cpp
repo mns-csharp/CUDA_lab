@@ -66,8 +66,10 @@ TEST(VectorHppTest_, c_hadamard_product_test)
  *                0 1 2  3 4 5
  * flat_result = |3 4 5  6 7 8|
  **/
-    ASSERT_EQ(get_(products1, 3, 0, 0), 3); ASSERT_EQ(get_(products1, 3, 0, 1), 4); ASSERT_EQ(get_(products1, 3, 0, 2), 5);
-    ASSERT_EQ(get_(products1, 3, 1, 0), 6); ASSERT_EQ(get_(products1, 3, 1, 1), 8); ASSERT_EQ(get_(products1, 3, 1, 2), 10);
+    ASSERT_EQ(get_value_(products1, 3, 0, 0), 3); ASSERT_EQ(get_value_(products1, 3, 0, 1), 4); ASSERT_EQ(
+            get_value_(products1, 3, 0, 2), 5);
+    ASSERT_EQ(get_value_(products1, 3, 1, 0), 6); ASSERT_EQ(get_value_(products1, 3, 1, 1), 8); ASSERT_EQ(
+            get_value_(products1, 3, 1, 2), 10);
 }
 
 /*
@@ -85,49 +87,10 @@ TEST(VectorHppTest, instantiateObject)
     ASSERT_EQ(v[1], 11);
     ASSERT_EQ(v[2], 12);
 }
-
-
-
-
-
-
-
-
-
-
-/*
-TEST(MatlabVectorTest, createWithSize)
-{
-    MatVect v(2U);
-
-    ASSERT_EQ(v.size(), 2U);
-    EXPECT_EQ(v.getElem(0), 0);
-    EXPECT_EQ(v.getElem(1), 0);
-}
-
-//my test
-TEST(MatlabVectorTest, createFromVector)
-{
-    std::vector<int> v1 { 5, 2};
-
-    MatVect vect(v1);
-
-    ASSERT_EQ(vect.size(), 2);
-    EXPECT_EQ(vect.getElem(0), 5);
-    EXPECT_EQ(vect.getElem(1), 2);
-}
-
-TEST(MatlabVectorTest, add)
-{
-    std::vector<int> v1{ 1, 2 };
-    MatVect mv1(v1);
-    std::vector<int> v2{ 4, 5 };
-    MatVect mv2(v2);
-
-    MatVect mv3 = add_vectors(mv1, mv2);
-
-    ASSERT_EQ(mv3.size(), 2U);
-    EXPECT_EQ(mv3.getElem(0), 5);
-    EXPECT_EQ(mv3.getElem(1), 7);
-}
 */
+
+
+
+
+
+

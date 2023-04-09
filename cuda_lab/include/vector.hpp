@@ -5,6 +5,60 @@
 #include <ctime>
 #include <iostream>
 
+float get_value_(float * vector, int cols, int row, int col)
+{
+    return vector[row * cols + col];
+}
+
+void get_column_(int col_no, float * column, float * flat_matrix, int rows, int cols)
+{
+    for (int i = 0; i < rows; i++) {
+        column[i] = flat_matrix[i * cols + col_no];
+    }
+}
+
+void scalar_product_(float * vector, int length, float scalar)
+{
+    for(int i=0 ; i<length; i++)
+    {
+        vector[i] = vector[i] * scalar;
+    }
+}
+
+float dot_product_(float * vector1, float * vector2, int len)
+{
+    float result =0;
+    for(int i=0 ; i<len; i++)
+    {
+        result += vector1[i] * vector2[i];
+    }
+    return result;
+}
+/**
+ * vector1 = | 1 |
+ *           | 2 |
+ *
+ * vector2 = |3  4  5|
+ *
+ * result = |3  4  5|
+ *          |6  8 10|
+ * i=0, j=1     index = 3
+ * 0 x 2 +
+ * //             0 1 2  3 4 5
+ * flat_result = |3 4 5  6 7 8|
+ **/
+void hadamard_product_(float* vector1, int rows, float* vector2, int cols, float* &product_mat)
+{
+    product_mat = new float[rows * cols];
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            product_mat[i * cols + j] = vector1[i] * vector2[j];
+        }
+    }
+}
+
 /*
 class Vector {
 private:
@@ -181,57 +235,5 @@ public:
     }
 };
 */
-float get_(float * vector, int cols, int row, int col)
-{
-    return vector[row * cols + col];
-}
 
-void get_column_(int col_no, float * column, float * vector, int rows, int cols)
-{
-    for (int i = 0; i < rows; i++) {
-        column[i] = vector[i * cols + col_no];
-    }
-}
-
-void scalar_product_(float * vector, int length, float scalar)
-{
-    for(int i=0 ; i<length; i++)
-    {
-        vector[i] = vector[i] * scalar;
-    }
-}
-
-float dot_product_(float * vector1, float * vector2, int len)
-{
-    float result =0;
-    for(int i=0 ; i<len; i++)
-    {
-        result += vector1[i] * vector2[i];
-    }
-    return result;
-}
-/**
- * vector1 = | 1 |
- *           | 2 |
- *
- * vector2 = |3  4  5|
- *
- * result = |3  4  5|
- *          |6  8 10|
- * i=0, j=1     index = 3
- * 0 x 2 +
- * //             0 1 2  3 4 5
- * flat_result = |3 4 5  6 7 8|
- **/
-void hadamard_product_(float* vector1, int rows, float* vector2, int cols, float* &product)
-{
-    product = new float[rows * cols];
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            product[i * cols + j] = vector1[i] * vector2[j];
-        }
-    }
-}
 #endif

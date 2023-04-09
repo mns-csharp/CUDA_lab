@@ -17,14 +17,14 @@ set(SOURCE_FILES
 set(TEST_SOURCES
         test/main_test.cpp      #plik z main() dla testów
         test/test_vector.cpp
-        test/test_matrix.cpp template_test.cu)
+        test/test_matrix.cpp include/witold_matrix.hpp test/witold_matrix_test.cpp)
 
 #dodaje bibliotekę Google Test, kompiluje ją z użyciem CMakeLists.txt z folderu googletest-master
 add_subdirectory(googletest-master)
 link_libraries(gmock)
 
 #konfiguracja do uruchomienia - matlab-2.cpp to plik z main()
-add_executable(cuda_lab_run ${SOURCE_FILES} main.cpp)
+add_executable(exe_run ${SOURCE_FILES} main.cpp)
 
 #konfiguracja do testów
 add_executable(cuda_lab_test_run ${SOURCE_FILES} ${TEST_SOURCES})
