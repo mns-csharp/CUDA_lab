@@ -5,22 +5,17 @@
 const int min_ = 0;
 const int max_ = 10;
 
-
 __global__ void AddMatrixKernel(t *A, t *B, t *C, int N) 
 {
-    int dimx = N;
-    int dimy = N;
-    int dimz = N;
-
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
     int k = blockIdx.z * blockDim.z + threadIdx.z;
 
     if (i < N && j < N && k < N) 
     {
-        int loc_c = k * dimx * dimy + j * dimx + i;
-        int loc_a = k * dimx * dimy + j * dimx + i;
-        int loc_b = k * dimx * dimy + j * dimx + i;
+        int loc_c = k * N * N + j * N + i;
+        int loc_a = k * N * N + j * N + i;
+        int loc_b = k * N * N + j * N + i;
         C[loc_c] = A[loc_a] + B[loc_b];
     }
 }
