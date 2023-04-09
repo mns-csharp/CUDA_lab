@@ -12,7 +12,8 @@
 #include <string>
 #include <chrono>
 
-typedef float t;
+typedef float T;
+typedef int I;
 
 void init_rand()
 {
@@ -31,7 +32,7 @@ int rand_int(int min_, int max_)
     return rand() % (max_ - min_ + 1) + min_;
 }
 
-void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName, int length) 
+void write_output_to_file(I* host_a, I* host_b, I* host_c, std::string fileName, int length) 
 {
 	std::ofstream outputFile;
 	outputFile.open(fileName);
