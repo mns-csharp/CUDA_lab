@@ -81,7 +81,7 @@ int main()
     }
 
     //int max_thread = 1024;
-    int max_block = 62500;
+    int max_block = 2048;
     threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
     blocks_per_grid = dim3(max_block, max_block, max_block); 
 
