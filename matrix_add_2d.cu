@@ -36,7 +36,7 @@ int main()
     dim3 blocks_per_grid;
 	
 	
-	length = 1000;
+	length = 1000000;
 	host_a = (t *) malloc(sizeof(t) * length);
 	host_b = (t *) malloc(sizeof(t) * length);
 	host_c = (t *) malloc(sizeof(t) * length);
