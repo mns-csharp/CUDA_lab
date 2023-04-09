@@ -88,10 +88,9 @@ void checkLast(const char* const file, const int line)
     }
 }
 
-
-__global__ void AddMatrixKernel(float *A, float *B, float *C, int N) 
+__global__ void MultiplyMatKernel(float* A, float* B, float** C, int N)
 {
-	int dimx = N;
+    int dimx = N;
 	int dimy = N;
 	int dimz = N;
 
@@ -104,9 +103,15 @@ __global__ void AddMatrixKernel(float *A, float *B, float *C, int N)
         int loc_c = k * dimx * dimy + j * dimx + i;
         int loc_a = j * dimx + i;
         int loc_b = i * dimy + j;
-        (*C)[loc_c] = A[loc_a] + B[loc_b];
+        (*C)[loc_c] = 0.0f;
+        for (int l=0; l<N; l++) 
+		{
+            float temp = A[loc_a+l]*B[loc_b+l];
+            (*C)[loc_c] += temp;
+        }
     }
 }
+
 
 int main()
 {
@@ -156,7 +161,7 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
-    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
+    MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
 	
     CHECK_LAST_CUDA_ERROR();
 	
