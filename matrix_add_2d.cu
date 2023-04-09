@@ -4,7 +4,7 @@ const int min_ = 0;
 const int max_ = 10;
 
 
-__global__ void AddMatrixKernel(t *A, t *B, t **C, int N) 
+__global__ void AddMatrixKernel(t *A, t *B, t *C, int N) 
 {
 	int dimx = N;
 	int dimy = N;
@@ -19,7 +19,7 @@ __global__ void AddMatrixKernel(t *A, t *B, t **C, int N)
         int loc_c = k * dimx * dimy + j * dimx + i;
         int loc_a = j * dimx + i;
         int loc_b = i * dimy + j;
-        (*C)[loc_c] = A[loc_a] + B[loc_b];
+        C[loc_c] = A[loc_a] + B[loc_b];
     }
 }
 
@@ -71,7 +71,7 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
 	
-    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, &device_c, 100);
+    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
 	
     CHECK_LAST_CUDA_ERROR();
 	
