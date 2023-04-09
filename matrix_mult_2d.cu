@@ -26,22 +26,23 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 	int dimy = N;
 	int dimz = N;
 
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-    int k = blockIdx.z * blockDim.z + threadIdx.z;
+    int r = blockIdx.x * blockDim.x + threadIdx.x;
+    int c = blockIdx.y * blockDim.y + threadIdx.y;
+    int d = blockIdx.z * blockDim.z + threadIdx.z;
 
-    if (i < N && j < N && k < N) 
+    if (r < N && c < N && d < N) 
 	{
-        int loc_c = k * dimx * dimy + j * dimx + i;
-        int loc_a = k * dimx * dimy + j * dimx + i;
-        int loc_b = k * dimx * dimy + j * dimx + i;
+        int loc_c = d * dimx * dimy + c * dimx + r;
  
-        for (int l=0; l<N; l++) 
+        for (int cc=0; cc<N; cc++) 
 		{
-            C[loc_c] += A[loc_a+l]*B[loc_b+l];
+		    int loc_a = (cc * dimx * dimy) + (c * dimx) + r;
+		    int loc_b = (d * dimx * dimy) + (cc * dimx) + r;
+            C[loc_c] += A[loc_a]*B[loc_b];
         }
     }
 }
+
 
 int main()
 {
