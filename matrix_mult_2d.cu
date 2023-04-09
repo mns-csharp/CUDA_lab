@@ -1,94 +1,26 @@
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-#include <cuda.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <chrono>
-
-typedef float t;
+////   test.cu   ////
+#include "common.hpp"
 
 const int min_ = 0;
 const int max_ = 10;
 
-void init_rand()
+/*
+void OuterProduct(float* A, float* B, float** C, int N)
 {
-	srand(time(0));
-}
-
-float rand_float(float min_, float max_)
-{
-    float randomFloat = (max_ - min_) * ((float)rand() / RAND_MAX) + min_;
-
-    return randomFloat;
-}
-
-int rand_int(int min_, int max_) 
-{
-    return rand() % (max_ - min_ + 1) + min_;
-}
-
-void write_output_to_file(t* host_a, t* host_b, t* host_c, std::string fileName, int length) 
-{
-	std::ofstream outputFile;
-	outputFile.open(fileName);
-
-	if(outputFile.is_open()) 
-	{
-		for(int i = 0; i < length; i++) 
-		{
-			outputFile << std::setw(10) << std::left << host_a[i] << std::setw(10) << std::left << host_b[i] << std::setw(10) << std::left << host_c[i] << "\n";
-		}
-		outputFile.close();
-		std::cout << "File written successfully.\n";
-	} 
-	else 
-	{
-		std::cerr << "Error opening file.\n";
-	}
-}
-
-void print_dim3(std::string text, dim3 data)
-{
-    std::cout << "\n";
-    std::cout << text << " ";
-    std::cout << data.x <<" * "<< data.y<<" * "<< data.z << " = ";
-	std::cout << data.x * data.y * data.z;
-	std::cout << "\n";
-}
-
-#define CHECK_CUDA_ERROR(val) check((val), #val, __FILE__, __LINE__)
-template <typename T>
-void check(T err, const char* const func, const char* const file, const int line)
-{
-    if (err != cudaSuccess)
+    for(int r=0 ; r<N ; r++)
     {
-        std::cerr << "CUDA Runtime Error at: " << file << ":" << line
-                  << std::endl;
-        std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
-        // We don't exit when we encounter CUDA errors in this example.
-        // std::exit(EXIT_FAILURE);
+        for(int c=0 ; c<N ; c++)
+        {
+            for(int cc=0 ; cc<N ; cc++)
+            {
+                (*C)[r * N + c] += A[r * N + cc] * B[cc * N + c];
+            }
+        }
     }
 }
+*/
 
-#define CHECK_LAST_CUDA_ERROR() checkLast(__FILE__, __LINE__)
-void checkLast(const char* const file, const int line)
-{
-    cudaError_t err{cudaGetLastError()};
-    if (err != cudaSuccess)
-    {
-        std::cerr << "CUDA Runtime Error at: " << file << ":" << line
-                  << std::endl;
-        std::cerr << cudaGetErrorString(err) << std::endl;
-        // We don't exit when we encounter CUDA errors in this example.
-        // std::exit(EXIT_FAILURE);
-    }
-}
-
-__global__ void MultiplyMatKernel(float* A, float* B, float** C, int N)
+__global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 {
     int dimx = N;
 	int dimy = N;
@@ -101,50 +33,49 @@ __global__ void MultiplyMatKernel(float* A, float* B, float** C, int N)
     if (i < N && j < N && k < N) 
 	{
         int loc_c = k * dimx * dimy + j * dimx + i;
-        int loc_a = j * dimx + i;
-        int loc_b = i * dimy + j;
-        (*C)[loc_c] = 0.0f;
+        int loc_a = k * dimx * dimy + j * dimx + i;
+        int loc_b = k * dimx * dimy + j * dimx + i;
+ 
         for (int l=0; l<N; l++) 
 		{
-            float temp = A[loc_a+l]*B[loc_b+l];
-            (*C)[loc_c] += temp;
+            C[loc_c] += A[loc_a+l]*B[loc_b+l];
         }
     }
 }
 
-
 int main()
 {
-    t * device_a;
-    t * device_b;
-    t * device_c;
-    t * host_a;
-    t * host_b;
-    t * host_c;
-    int length;
+    I * device_a;
+    I * device_b;
+    I * device_c;
+    I * host_a;
+    I * host_b;
+    I * host_c;
+    int kernel_len;
+	int length;
     dim3 threads_per_block;
-    dim3 blocks_per_grid;
-	
-	
-	length = 1000;
-	host_a = (t *) malloc(sizeof(t) * length);
-	host_b = (t *) malloc(sizeof(t) * length);
-	host_c = (t *) malloc(sizeof(t) * length);
-	
-	if (host_a == nullptr || host_b == nullptr || host_c == nullptr)
+    dim3 blocks_per_grid;    
+    
+	kernel_len = 2;
+    length = kernel_len * kernel_len * kernel_len;
+    host_a = (I *) malloc(sizeof(I) * length);
+    host_b = (I *) malloc(sizeof(I) * length);
+    host_c = (I *) malloc(sizeof(I) * length);
+    
+    if (host_a == nullptr || host_b == nullptr || host_c == nullptr)
     {
         std::cerr << "Error: Memory allocation for host arrays failed." << std::endl;
         exit(1);
     }
 
-    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_a, sizeof(t) * length));
-    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_b, sizeof(t) * length));
-    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_c, sizeof(t) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_a, sizeof(I) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_b, sizeof(I) * length));
+    CHECK_CUDA_ERROR(cudaMalloc((void**) &device_c, sizeof(I) * length));
 
-	for (int i = 0; i < length ; ++i) 
-	{
-        host_a[i] = rand_int(min_, max_);
-        host_b[i] = rand_int(min_, max_);
+    for (int i = 0; i < length ; ++i) 
+    {
+        host_a[i] = rand_float(min_, max_);
+        host_b[i] = rand_float(min_, max_);
         host_c[i] = 0;
     }
 
@@ -152,21 +83,18 @@ int main()
     int max_block = 62500;
     threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
     blocks_per_grid = dim3(max_block, max_block, max_block); 
-                           // ceil((length + max_block_per_grid_per_dim-1) / 8), 
-			               // ceil((length + max_block_per_grid_per_dim-1) / 4));
 
     print_dim3("threads_per_block", threads_per_block);
     print_dim3("blocks_per_grid", blocks_per_grid);
 
-    CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(t) * length, cudaMemcpyHostToDevice));
-    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(t) * length, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(I) * length, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(I) * length, cudaMemcpyHostToDevice));
+    
+    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
 	
-    MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
-	
-    CHECK_LAST_CUDA_ERROR();
-	
+    CHECK_LAST_CUDA_ERROR();	
     CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
-    CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(t) * length, cudaMemcpyDeviceToHost));
+    CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(I) * length, cudaMemcpyDeviceToHost));
 	
     write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
@@ -178,3 +106,4 @@ int main()
     free(host_b);
     free(host_c);
 }
+
