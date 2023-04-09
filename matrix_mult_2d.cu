@@ -91,7 +91,7 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(I) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(I) * length, cudaMemcpyHostToDevice));
     
-    MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, 100);
+    MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, kernel_len);
 	
     CHECK_LAST_CUDA_ERROR();	
     CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
