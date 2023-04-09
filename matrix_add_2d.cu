@@ -104,7 +104,7 @@ __global__ void AddMatrixKernel(float *A, float *B, float *C, int N)
         int loc_c = k * dimx * dimy + j * dimx + i;
         int loc_a = j * dimx + i;
         int loc_b = i * dimy + j;
-        (*C)[loc_c] = A[loc_a] + B[loc_b];
+        C[loc_c] = A[loc_a] + B[loc_b];
     }
 }
 
