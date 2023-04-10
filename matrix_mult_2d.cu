@@ -6,25 +6,20 @@ const int max_ = 10;
 
 __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 {
-    int dimx = N;
-    int dimy = N;
-    int dimz = N;
+    int ROW = blockIdx.y*blockDim.y+threadIdx.y;
+    int COL = blockIdx.x*blockDim.x+threadIdx.x;
+	int DEP = blockIdx.x*blockDim.x+threadIdx.x;
 
-    int r = blockIdx.x * blockDim.x + threadIdx.x;
-    int c = blockIdx.y * blockDim.y + threadIdx.y;
-    int d = blockIdx.z * blockDim.z + threadIdx.z;
+    float tmpSum = 0;
 
-    if (r < N && c < N && d < N) 
-    {
-        int loc_c = d * dimx * dimy + r * dimy + c;
-        int loc_a = d * dimx * dimy + r * dimy + c;
-        int loc_b = d * dimx * dimy + r * dimy + c;
-        
-		for(int cc=0 ; cc<N ; cc++)
+    if (ROW<N && COL<N && DEP<N) 
+	{
+        for (int i = 0; i < N; i++) 
 		{
-		    C[loc_c] += A[loc_a+cc] * B[loc_b+cc];
+            tmpSum += A[DEP*N*N+ ROW * N + i] * B[DEP*N*N + i * N + COL];
         }
     }
+    C[DEP*N*N + ROW * N + COL] = tmpSum;
 }
 
 void Transpose(I *A, I**At, int N)

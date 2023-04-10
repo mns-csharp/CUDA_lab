@@ -53,9 +53,11 @@ TEST(matrix_hpp_test, matrix_multiply_with_tanspose)
     ASSERT_EQ(C[0], 30);
     ASSERT_EQ(C[1], 36);
     ASSERT_EQ(C[2], 42);
+
     ASSERT_EQ(C[3], 66);
     ASSERT_EQ(C[4], 81);
     ASSERT_EQ(C[5], 96);
+
     ASSERT_EQ(C[6], 102);
     ASSERT_EQ(C[7], 126);
     ASSERT_EQ(C[8], 150);
