@@ -21,11 +21,9 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 		int loc_b = 0;
         for (int cc=0; cc<N; cc++) 
 		{	
-            loc_a = (cc * dimx * dimy) + (c * dimx) + r;
-		    loc_b = (d * dimx * dimy) + (cc * dimx) + r;	    
-            C[loc_c] += A[loc_a]*B[loc_b];
+            C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
         }
-		printf("loc_c=%d loc_a=%d  loc_b=%d  C[loc_c]=%d  A[loc_a]=%d   B[loc_b]=%d\n", 
+		printf("loc_c=%d\tloc_a=%d\tloc_b=%d\tC[loc_c]=%d\tA[loc_a]=%d\tB[loc_b]=%d\n", 
 			        loc_c,   loc_a,    loc_b,    C[loc_c],    A[loc_a],     B[loc_b]);
     }
 }
