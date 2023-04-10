@@ -23,7 +23,7 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 		{	
             C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
         }
-		printf("C[%d]=%d  \n", loc_c, C[loc_c]);
+		//printf("C[%d]=%d  \n", loc_c, C[loc_c]);
     }
 }
 
