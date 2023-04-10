@@ -7,23 +7,22 @@ const int max_ = 10;
 __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 {
     int dimx = N;
-	int dimy = N;
-	int dimz = N;
+    int dimy = N;
+    int dimz = N;
 
     int r = blockIdx.x * blockDim.x + threadIdx.x;
     int c = blockIdx.y * blockDim.y + threadIdx.y;
-	int d = blockIdx.z * blockDim.z + threadIdx.z;
+    int d = blockIdx.z * blockDim.z + threadIdx.z;
 
     if (r < N && c < N && d < N) 
-	{
-        int loc_c = d * dimx * dimy + c * dimx + r;
-		int loc_a = d * dimx * dimy + c * dimx + r;
-		int loc_b = d * dimx * dimy + c * dimx + r;
+    {
+        int loc_c = d * dimx * dimy + r * dimy + c;
+        int loc_a = d * dimx * dimy + r * dimy + c;
+        int loc_b = d * dimx * dimy + c * dimy + r;
         for (int cc=0; cc<N; cc++) 
-		{	
+        {   
             C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
         }
-		//printf("C[%d]=%d  \n", loc_c, C[loc_c]);
     }
 }
 
@@ -34,7 +33,7 @@ void Transpose(I *A, I**At, int N)
         for (int j = 0; j < N; j++)
         {
             // copy the value at (i,j) to (j,i) in At
-            (*At)[j*N + i] = A[i*N + j];
+            (*At)[i*N + j] = A[j*N + i];
         }
     }
 }
@@ -47,7 +46,7 @@ void Print(I*A, int N)
         {
             printf("%d ", A[i*N + j]);
         }
-		printf("\n");
+        printf("\n");
     }
 }
 
