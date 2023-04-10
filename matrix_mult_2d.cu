@@ -20,8 +20,10 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
         int loc_a = d * dimx * dimy + r * dimy + c;
         int loc_b = d * dimx * dimy + r * dimy + c;
         
-		C[loc_c] += A[loc_a]*B[loc_b];
-        
+		for(int cc=0 ; cc<N ; cc++)
+		{
+		    C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
+        }
     }
 }
 
