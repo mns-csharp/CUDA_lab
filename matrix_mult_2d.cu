@@ -39,6 +39,18 @@ void Transpose(I *A, I**At, int N)
     }
 }
 
+void Print(I*A, int N)
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            printf("%d ", A[i*N + j]);
+        }
+		printf("\n");
+    }
+}
+
 int main()
 {    
     I * host_a;
@@ -78,6 +90,9 @@ int main()
     }
 
 	Transpose(host_b, &host_b_T, kernel_len);
+
+    Print(host_a);
+    Print(host_b_T);
 
     int dimx = kernel_len;
     int dimy = kernel_len;
