@@ -1,48 +1,25 @@
-////   test.cu   ////
+////    test.cu //////////
+
 #include "common.hpp"
 
 const int min_ = 0;
 const int max_ = 10;
 
-/*
-void OuterProduct(float* A, float* B, float** C, int N)
+__global__ void AddMatrixKernel(I *A, I *B, I *C, int N) 
 {
-    for(int r=0 ; r<N ; r++)
-    {
-        for(int c=0 ; c<N ; c++)
-        {
-            for(int cc=0 ; cc<N ; cc++)
-            {
-                (*C)[r * N + c] += A[r * N + cc] * B[cc * N + c];
-            }
-        }
-    }
-}
-*/
-
-__global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
-{
-    int dimx = N;
-	int dimy = N;
-	int dimz = N;
-
     int r = blockIdx.x * blockDim.x + threadIdx.x;
     int c = blockIdx.y * blockDim.y + threadIdx.y;
     int d = blockIdx.z * blockDim.z + threadIdx.z;
 
     if (r < N && c < N && d < N) 
-	{
-        int loc_c = d * dimx * dimy + c * dimx + r;
- 
-        for (int cc=0; cc<N; cc++) 
-		{
-		    int loc_a = (cc * dimx * dimy) + (c * dimx) + r;
-		    int loc_b = (d * dimx * dimy) + (cc * dimx) + r;
-            C[loc_c] += A[loc_a]*B[loc_b];
-        }
+    {
+        int loc_c = d * N * N + c * N + r;
+        int loc_a = d * N * N + c * N + r;
+        int loc_b = d * N * N + c * N + r;
+        C[loc_c] = A[loc_a] + B[loc_b];
+		printf("%d(%d) = %d(%d) + %d(%d)\n", C[loc_c], loc_c, A[loc_a], loc_a, B[loc_b], loc_b);
     }
 }
-
 
 int main()
 {
@@ -52,12 +29,12 @@ int main()
     I * host_a;
     I * host_b;
     I * host_c;
-    int kernel_len;
-	int length;
+	int kernel_len;
+    int length;
     dim3 threads_per_block;
-    dim3 blocks_per_grid;    
+    dim3 blocks_per_grid;
     
-	kernel_len = 3;
+    kernel_len = 3;
     length = kernel_len * kernel_len * kernel_len;
     host_a = (I *) malloc(sizeof(I) * length);
     host_b = (I *) malloc(sizeof(I) * length);
@@ -75,17 +52,20 @@ int main()
 
     for (int i = 0; i < length ; ++i) 
     {
-        host_a[i] = rand_float(min_, max_);
-        host_b[i] = rand_float(min_, max_);
+        host_a[i] = rand_int(min_, max_);
+        host_b[i] = rand_int(min_, max_);
         host_c[i] = 0;
     }
 
-    int dimx = 2;
-    int dimy = 2;
-    int dimz = 2;
+    int dimx = kernel_len;
+	int dimy = kernel_len;
+	int dimz = kernel_len;
 
-    dim3 threads_per_block(3, 3, 3);
-    dim3 blocks_per_grid(3, 3, 3);
+    //int max_thread = 1024;
+    threads_per_block = dim3(32, 8, 4); // because, 1204 = 32*8*4 
+    blocks_per_grid = dim3((dimx + threads_per_block.x - 1) / threads_per_block.x, 
+	                       (dimy + threads_per_block.y - 1) / threads_per_block.y, 
+						   (dimz + threads_per_block.z - 1) / threads_per_block.z);
 
     print_dim3("threads_per_block", threads_per_block);
     print_dim3("blocks_per_grid", blocks_per_grid);
@@ -93,9 +73,10 @@ int main()
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(I) * length, cudaMemcpyHostToDevice));
     CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(I) * length, cudaMemcpyHostToDevice));
     
-    MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, kernel_len);
+    AddMatrixKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, kernel_len);
 	
-    CHECK_LAST_CUDA_ERROR();	
+    CHECK_LAST_CUDA_ERROR();
+	
     CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
     CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(I) * length, cudaMemcpyDeviceToHost));
 	
@@ -109,4 +90,3 @@ int main()
     free(host_b);
     free(host_c);
 }
-
