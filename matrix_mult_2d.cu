@@ -27,16 +27,28 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
     }
 }
 
+void Transpose(float *A, float**At, int N)
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            // copy the value at (i,j) to (j,i) in At
+            (*At)[j*N + i] = A[i*N + j];
+        }
+    }
+}
 
 int main()
-{
+{    
+    I * host_a;
+    I * host_b;
+	I * host_b_T;
+    I * host_c;
     I * device_a;
     I * device_b;
     I * device_c;
-    I * host_a;
-    I * host_b;
-    I * host_c;
-    int kernel_len;
+	int kernel_len;
 	int length;
     dim3 threads_per_block;
     dim3 blocks_per_grid;    
@@ -45,6 +57,7 @@ int main()
     length = kernel_len * kernel_len * 1;
     host_a = (I *) malloc(sizeof(I) * length);
     host_b = (I *) malloc(sizeof(I) * length);
+	host_b_T = (I *) malloc(sizeof(I) * length);
     host_c = (I *) malloc(sizeof(I) * length);
     
     if (host_a == nullptr || host_b == nullptr || host_c == nullptr)
@@ -64,6 +77,8 @@ int main()
         host_c[i] = 0;
     }
 
+	Transpose(host_b, host_b_T, kernel_len);
+
     int dimx = kernel_len;
     int dimy = kernel_len;
     int dimz = 1;
@@ -78,7 +93,7 @@ int main()
     print_dim3("blocks_per_grid", blocks_per_grid);
 
     CHECK_CUDA_ERROR(cudaMemcpy(device_a, host_a, sizeof(I) * length, cudaMemcpyHostToDevice));
-    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b, sizeof(I) * length, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpy(device_b, host_b_T, sizeof(I) * length, cudaMemcpyHostToDevice));
     
     MultiplyMatKernel<<<blocks_per_grid, threads_per_block>>>(device_a, device_b, device_c, kernel_len);
 	
