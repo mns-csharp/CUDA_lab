@@ -116,6 +116,8 @@ int main()
     CHECK_CUDA_ERROR(cudaDeviceSynchronize());	
     CHECK_CUDA_ERROR(cudaMemcpy(host_c, device_c, sizeof(I) * length, cudaMemcpyDeviceToHost));
 	
+	Print(host_c, kernel_len);
+	
     write_output_to_file(host_a, host_b, host_c, "output.txt", length);
 	
     cudaFree(device_a);
