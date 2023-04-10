@@ -77,7 +77,7 @@ int main()
         host_c[i] = 0;
     }
 
-	Transpose(host_b, host_b_T, kernel_len);
+	Transpose(host_b, &host_b_T, kernel_len);
 
     int dimx = kernel_len;
     int dimy = kernel_len;
