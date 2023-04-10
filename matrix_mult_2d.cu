@@ -22,7 +22,7 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
         
 		for(int cc=0 ; cc<N ; cc++)
 		{
-		    C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
+		    C[loc_c] += A[loc_a+cc] * B[loc_b+cc];
         }
     }
 }
