@@ -91,8 +91,8 @@ int main()
 
 	Transpose(host_b, &host_b_T, kernel_len);
 
-    Print(host_a);
-    Print(host_b_T);
+    Print(host_a, kernel_len);
+    Print(host_b_T, kernel_len);
 
     int dimx = kernel_len;
     int dimy = kernel_len;
