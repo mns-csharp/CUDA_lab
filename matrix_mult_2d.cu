@@ -27,7 +27,7 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
     }
 }
 
-void Transpose(float *A, float**At, int N)
+void Transpose(I *A, I**At, int N)
 {
     for (int i = 0; i < N; i++)
     {
