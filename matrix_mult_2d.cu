@@ -16,10 +16,10 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 	{
         for (int i = 0; i < N; i++) 
 		{
-            tmpSum += A[DEP*N*N+ ROW * N + i] * B[DEP*N*N + i * N + COL];
+            tmpSum += A[ROW * N + i] * B[i * N + COL];
         }
     }
-    C[DEP*N*N + ROW * N + COL] = tmpSum;
+    C[ROW * N + COL] = tmpSum;
 }
 
 void Transpose(I *A, I**At, int N)
