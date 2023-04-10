@@ -17,13 +17,13 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
     if (r < N && c < N && d < N) 
 	{
         int loc_c = d * dimx * dimy + c * dimx + r;
-		int loc_a = 0;
-		int loc_b = 0;
-        //for (int cc=0; cc<N; cc++) 
-		//{	
-        //    C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
-        //}
-		printf("loc_c=%d  ", loc_c);
+		int loc_a = d * dimx * dimy + c * dimx + r;
+		int loc_b = d * dimx * dimy + c * dimx + r;
+        for (int cc=0; cc<N; cc++) 
+		{	
+            C[loc_c] += A[loc_a+cc]*B[loc_b+cc];
+        }
+		printf("C[%d]=%d  \n", loc_c, C[loc_c]);
     }
 }
 
