@@ -14,9 +14,9 @@ __global__ void MultiplyMatKernel(I* A, I* B, I* C, int N)
 
     if (ROW<N && COL<N && DEP<N) 
 	{
-        for (int i = 0; i < N; i++) 
+        for (int cc = 0; cc < N; cc++) 
 		{
-            tmpSum += A[ROW * N + i] * B[ROW * N + i];
+            tmpSum += A[ROW * N + cc] * B[ROW * N + cc];
         }
     }
     C[ROW * N + COL] = tmpSum;
